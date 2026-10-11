@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun IQ Test Challenge!</title>
+    <style>
+        /* Reset and basic styling for the decoy page */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Decoy Content Container */
+        #decoy-container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+            transition: opacity 0.3s ease;
+        }
+
+        h1 {
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #5f6368;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            background-color: #1557b0;
+        }
+
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d93025;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* Hidden Jumpscare Overlay */
+        #jumpscare-overlay {
+            display: none; /* Kept completely hidden until triggered */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            z-index: 99999; /* Forces it above absolutely everything else */
+        }
+
+        #jumpscare-overlay img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Prevents the GIF from stretching weirdly */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DECOY PAGE CONTENT (Tricks the victim into waiting) -->
+    <div id="decoy-container">
+        <h1>Free Online IQ Test</h1>
+        <p>Press the button below to initialize the 5-second scan and calculate your cognitive score.</p>
+        <button class="btn" id="start-btn" onclick="startTimer()">Start Test</button>
+        <div id="timer">Scanning: 5s</div>
+    </div>
+
+    <!-- JUMPSCARE OVERLAY (Hidden by default) -->
+    <div id="jumpscare-overlay">
+        <!-- The GIF is injected here via JavaScript so it starts from frame 1 -->
+        <img id="scare-img" src="" alt="">
+    </div>
+
+    <!-- AUDIO ELEMENT (Uses a reliable public free-to-use screaming asset) -->
+    <audio id="scare-audio" preload="auto">
+        <source src="https://google.com" type="audio/ogg">
+        <source src="https://soundjay.com" type="audio/mp3">
+    </audio>
+
+    <script>
+        let countdown = 5;
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('start-btn');
+        const decoyContainer = document.getElementById('decoy-container');
+        const overlay = document.getElementById('jumpscare-overlay');
+        const scareImg = document.getElementById('scare-img');
+        const scareAudio = document.getElementById('scare-audio');
+
+        function startTimer() {
+            // Hide the start button and show the countdown
+            startBtn.style.display = 'none';
+            timerDisplay.style.display = 'block';
+            
+            // Countdown loop
+            const interval = setInterval(() => {
+                countdown--;
+                timerDisplay.textContent = `Scanning: ${countdown}s`;
+                
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    triggerScare();
+                }
+            }, 1000);
+        }
+
+        function triggerScare() {
+            // 1. Instantly hide the text box container
+            decoyContainer.style.display = 'none';
+            
+            // 2. Reveal the hidden fullscreen black overlay
+            overlay.style.display = 'block';
+            
+            // 3. Set the GIF source now so it plays perfectly from frame 1
+            scareImg.src = 'scare.gif';
+            
+            // 4. Force browser focus and play the loud audio track
+            scareAudio.volume = 1.0; // Max volume
+            scareAudio.play().catch(error => {
+                console.log("Audio playback delayed until user interacting with screen:", error);
+            });
+
+            // 5. Optional: Request fullscreen mode for maximum scare effect
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>
